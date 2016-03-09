@@ -1,4 +1,3 @@
-INCLUDE( ~/opencv_bebop/our.config.cmake )
 
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_VERSION 1)
@@ -88,3 +87,4 @@ macro( find_host_package )
  set( CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY )
  set( CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY )
 endmacro()
+
