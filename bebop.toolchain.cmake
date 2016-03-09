@@ -6,11 +6,9 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 set(GCC_COMPILER_VERSION "4.6" CACHE STRING "GCC Compiler version")
 
 set(FLOAT_ABI_SUFFIX "")
-if (NOT SOFTFP)
-  set(FLOAT_ABI_SUFFIX "hf")
-endif()
 
 set(CMAKE_C_COMPILER           "arm-linux-gnueabi-gcc"                    CACHE STRING "cc compiler")
+set(CMAKE_AR           "arm-linux-gnueabi-ar"                    CACHE STRING "cc ar")
 set(CMAKE_CXX_COMPILER 	"arm-linux-gnueabi-g++"                    CACHE STRING "c++ compiler")
 set(ARM_LINUX_SYSROOT /usr/arm-linux-gnueabi${FLOAT_ABI_SUFFIX} CACHE PATH "ARM cross compilation system root")
 
