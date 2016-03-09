@@ -1,11 +1,20 @@
 
-PWD	= ~/opencv_bebop
+PWD	= $(shell pwd)
 
 
 all:
+	git submodule init
+	git submodule update
+	make cc
+	make -C ./build
+	make -C ./build install
+
+
+cc:
 	mkdir build -p;
 	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/bebop.toolchain.cmake -DBUILD_CUDA_STUBS=FALSE -DBUILD_DOCS=FALSE  \
 		-DBUILD_EXAMPLES=FALSE -DBUILD_FAT_JAVA_LIB=TRUE \
+		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
 		 -DBUILD_JASPER=FALSE \
 		 -DBUILD_JPEG=FALSE \
 		 -DBUILD_OPENEXR=FALSE \
@@ -25,17 +34,17 @@ all:
 		 -DBUILD_opencv_features2d=TRUE \
 		 -DBUILD_opencv_flann=FALSE \
 		 -DBUILD_opencv_highgui=TRUE \
-		 -DBUILD_opencv_imgcodecs=FALSE \
+		 -DBUILD_opencv_imgcodecs=TRUE \
 		 -DBUILD_opencv_imgproc=FALSE \
 		 -DBUILD_opencv_java=FALSE \
 		 -DBUILD_opencv_ml=FALSE \
-		 -DBUILD_opencv_objdetect=FALSE \
-		 -DBUILD_opencv_photo=FALSE \
-		 -DBUILD_opencv_shape=FALSE \
+		 -DBUILD_opencv_objdetect=TRUE \
+		 -DBUILD_opencv_photo=TRUE \
+		 -DBUILD_opencv_shape=TRUE \
 		 -DBUILD_opencv_stitching=FALSE \
 		 -DBUILD_opencv_superres=FALSE \
 		 -DBUILD_opencv_ts=FALSE \
-		 -DBUILD_opencv_video=FALSE \
+		 -DBUILD_opencv_video=TRUE \
 		 -DBUILD_opencv_videoio=FALSE \
 		 -DBUILD_opencv_videostab=FALSE \
 		 -DBUILD_opencv_world=FALSE \
@@ -97,7 +106,7 @@ all:
 		 -DWITH_OPENMP=FALSE \
 		 -DWITH_OPENNI=FALSE \
 		 -DWITH_OPENNI2=FALSE \
-		 -DWITH_PNG=FALSE \
+		 -DWITH_PNG=TRUE \
 		 -DWITH_PTHREADS_PF=FALSE \
 		 -DWITH_PVAPI=FALSE \
 		 -DWITH_QT=FALSE \
