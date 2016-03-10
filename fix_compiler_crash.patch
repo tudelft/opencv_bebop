@@ -1,0 +1,63 @@
+From 15cd69c2997e75fd07ad44a73d7266b01f0c56ea Mon Sep 17 00:00:00 2001
+From: Christophe De Wagter <dewagter@gmail.com>
+Date: Thu, 10 Mar 2016 08:31:22 +0100
+Subject: [PATCH] fix internal compiler error ubuntu 14.04
+
+---
+ modules/imgproc/src/connectedcomponents.cpp | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
+
+diff --git a/modules/imgproc/src/connectedcomponents.cpp b/modules/imgproc/src/connectedcomponents.cpp
+index 523eb14..1920dd2 100644
+--- a/modules/imgproc/src/connectedcomponents.cpp
++++ b/modules/imgproc/src/connectedcomponents.cpp
+@@ -335,8 +335,9 @@ namespace cv{
+ }//end namespace connectedcomponents
+ 
+ //L's type must have an appropriate depth for the number of pixels in I
++/*
+ template<typename StatsOp>
+-static
++staticz
+ int connectedComponents_sub1(const cv::Mat &I, cv::Mat &L, int connectivity, StatsOp &sop){
+     CV_Assert(L.channels() == 1 && I.channels() == 1);
+     CV_Assert(connectivity == 8 || connectivity == 4);
+@@ -361,6 +362,7 @@ int connectedComponents_sub1(const cv::Mat &I, cv::Mat &L, int connectivity, Sta
+     CV_Error(CV_StsUnsupportedFormat, "unsupported label/image type");
+     return -1;
+ }
++*/
+ 
+ }
+ 
+@@ -369,14 +371,8 @@ int cv::connectedComponents(InputArray _img, OutputArray _labels, int connectivi
+     _labels.create(img.size(), CV_MAT_DEPTH(ltype));
+     cv::Mat labels = _labels.getMat();
+     connectedcomponents::NoOp sop;
+-    if(ltype == CV_16U){
+-        return connectedComponents_sub1(img, labels, connectivity, sop);
+-    }else if(ltype == CV_32S){
+-        return connectedComponents_sub1(img, labels, connectivity, sop);
+-    }else{
+         CV_Error(CV_StsUnsupportedFormat, "the type of labels must be 16u or 32s");
+         return 0;
+-    }
+ }
+ 
+ int cv::connectedComponentsWithStats(InputArray _img, OutputArray _labels, OutputArray statsv,
+@@ -386,12 +382,6 @@ int cv::connectedComponentsWithStats(InputArray _img, OutputArray _labels, Outpu
+     _labels.create(img.size(), CV_MAT_DEPTH(ltype));
+     cv::Mat labels = _labels.getMat();
+     connectedcomponents::CCStatsOp sop(statsv, centroids);
+-    if(ltype == CV_16U){
+-        return connectedComponents_sub1(img, labels, connectivity, sop);
+-    }else if(ltype == CV_32S){
+-        return connectedComponents_sub1(img, labels, connectivity, sop);
+-    }else{
+         CV_Error(CV_StsUnsupportedFormat, "the type of labels must be 16u or 32s");
+         return 0;
+-    }
+ }
+-- 
+1.9.1
+

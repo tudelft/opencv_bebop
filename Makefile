@@ -5,16 +5,24 @@ PWD	= $(shell pwd)
 all:
 	git submodule init
 	git submodule update
+	cd opencv && git am --signoff < ../fix_compiler_crash.patch && cd ..
 	make cc
+	make build
+
+build:
 	make -C ./build
 	make -C ./build install
 
 
+
 cc:
 	mkdir build -p;
-	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/bebop.toolchain.cmake -DBUILD_CUDA_STUBS=FALSE -DBUILD_DOCS=FALSE  \
-		-DBUILD_EXAMPLES=FALSE -DBUILD_FAT_JAVA_LIB=TRUE \
+	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/bebop.toolchain.cmake \
 		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
+		 -DBUILD_CUDA_STUBS=FALSE \
+		 -DBUILD_DOCS=FALSE  \
+		 -DBUILD_EXAMPLES=FALSE \
+		 -DBUILD_FAT_JAVA_LIB=TRUE \
 		 -DBUILD_JASPER=FALSE \
 		 -DBUILD_JPEG=FALSE \
 		 -DBUILD_OPENEXR=FALSE \
@@ -31,20 +39,20 @@ cc:
 		 -DBUILD_opencv_apps=FALSE \
 		 -DBUILD_opencv_calib3d=FALSE \
 		 -DBUILD_opencv_core=TRUE \
-		 -DBUILD_opencv_features2d=TRUE \
+		 -DBUILD_opencv_features2d=FALSE \
 		 -DBUILD_opencv_flann=FALSE \
-		 -DBUILD_opencv_highgui=TRUE \
+		 -DBUILD_opencv_highgui=FALSE \
 		 -DBUILD_opencv_imgcodecs=TRUE \
-		 -DBUILD_opencv_imgproc=FALSE \
+		 -DBUiLD_opencv_imgproc=TRUE \
 		 -DBUILD_opencv_java=FALSE \
 		 -DBUILD_opencv_ml=FALSE \
-		 -DBUILD_opencv_objdetect=TRUE \
-		 -DBUILD_opencv_photo=TRUE \
-		 -DBUILD_opencv_shape=TRUE \
+		 -DBUILD_opencv_objdetect=FALSE \
+		 -DBUILD_opencv_photo=FALSE \
+		 -DBUILD_opencv_shape=FALSE \
 		 -DBUILD_opencv_stitching=FALSE \
 		 -DBUILD_opencv_superres=FALSE \
 		 -DBUILD_opencv_ts=FALSE \
-		 -DBUILD_opencv_video=TRUE \
+		 -DBUILD_opencv_video=FALSE \
 		 -DBUILD_opencv_videoio=FALSE \
 		 -DBUILD_opencv_videostab=FALSE \
 		 -DBUILD_opencv_world=FALSE \
@@ -127,3 +135,5 @@ cc:
 clean:
 	rm -rf ./build
 	rm -rf *~
+
+.PHONY: build cc clean
