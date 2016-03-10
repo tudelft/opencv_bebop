@@ -8,6 +8,7 @@ all:
 	cd opencv && git am --signoff < ../fix_compiler_crash.patch && cd ..
 	make cc
 	make build
+	./link.py > install/opencv.xml
 
 build:
 	make -C ./build
