@@ -9,6 +9,7 @@ all:
 	make cc
 	make build
 	./link.py > install/opencv.xml
+	git submodule update
 
 build:
 	make -C ./build
