@@ -132,6 +132,10 @@ cc:
 
 
 
+patch:
+	cd opencv
+	git format-patch 3.1.0 --stdout > ../fix_compiler_crash.patch
+
 
 clean:
 	rm -rf ./build

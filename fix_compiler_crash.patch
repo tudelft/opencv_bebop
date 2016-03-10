@@ -1,8 +1,9 @@
-From 15cd69c2997e75fd07ad44a73d7266b01f0c56ea Mon Sep 17 00:00:00 2001
+From ea4d1ca8ea61ce8c656afdb3ea216f0fa40bc7be Mon Sep 17 00:00:00 2001
 From: Christophe De Wagter <dewagter@gmail.com>
 Date: Thu, 10 Mar 2016 08:31:22 +0100
-Subject: [PATCH] fix internal compiler error ubuntu 14.04
+Subject: [PATCH 1/2] fix internal compiler error ubuntu 14.04
 
+Signed-off-by: Christophe De Wagter <dewagter@gmail.com>
 ---
  modules/imgproc/src/connectedcomponents.cpp | 16 +++-------------
  1 file changed, 3 insertions(+), 13 deletions(-)
@@ -58,6 +59,48 @@ index 523eb14..1920dd2 100644
          return 0;
 -    }
  }
+-- 
+1.9.1
+
+
+From fc4a1543674ff9c7e7e05b5bdaea46821e711182 Mon Sep 17 00:00:00 2001
+From: Christophe De Wagter <dewagter@gmail.com>
+Date: Thu, 10 Mar 2016 12:58:07 +0100
+Subject: [PATCH 2/2] No OPENCL means NO OPENCL
+
+---
+ modules/core/src/ocl.cpp | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
+
+diff --git a/modules/core/src/ocl.cpp b/modules/core/src/ocl.cpp
+index eed4ee5..d663fb5 100644
+--- a/modules/core/src/ocl.cpp
++++ b/modules/core/src/ocl.cpp
+@@ -758,23 +758,7 @@ static void* initOpenCLAndLoad(const char* funcname)
+ 
+ static void* initOpenCLAndLoad(const char* funcname)
+ {
+-    static bool initialized = false;
+-    static void* handle = 0;
+-    if (!handle)
+-    {
+-        if(!initialized)
+-        {
+-            handle = dlopen("libOpenCL.so", RTLD_LAZY);
+-            if(!handle)
+-                handle = dlopen("libCL.so", RTLD_LAZY);
+-            initialized = true;
+-            g_haveOpenCL = handle != 0 && dlsym(handle, oclFuncToCheck) != 0;
+-        }
+-        if(!handle)
+-            return 0;
+-    }
+-
+-    return funcname ? (void*)dlsym(handle, funcname) : 0;
++  return 0;
+ }
+ 
+ #else
 -- 
 1.9.1
 
