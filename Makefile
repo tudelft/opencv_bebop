@@ -47,13 +47,13 @@ cc:
 		 -DBUiLD_opencv_imgproc=TRUE \
 		 -DBUILD_opencv_java=FALSE \
 		 -DBUILD_opencv_ml=FALSE \
-		 -DBUILD_opencv_objdetect=FALSE \
+		 -DBUILD_opencv_objdetect=TRUE \
 		 -DBUILD_opencv_photo=FALSE \
 		 -DBUILD_opencv_shape=FALSE \
 		 -DBUILD_opencv_stitching=FALSE \
 		 -DBUILD_opencv_superres=FALSE \
 		 -DBUILD_opencv_ts=FALSE \
-		 -DBUILD_opencv_video=FALSE \
+		 -DBUILD_opencv_video=TRUE \
 		 -DBUILD_opencv_videoio=FALSE \
 		 -DBUILD_opencv_videostab=FALSE \
 		 -DBUILD_opencv_world=FALSE \
