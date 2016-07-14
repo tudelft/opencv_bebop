@@ -140,6 +140,7 @@ patch:
 
 clean:
 	rm -rf ./build
+	rm -rf ./install
 	rm -rf *~
 
 .PHONY: build cc clean
