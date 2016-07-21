@@ -55,8 +55,8 @@ cc:
 		 -DBUILD_opencv_superres=FALSE \
 		 -DBUILD_opencv_ts=FALSE \
 		 -DBUILD_opencv_video=TRUE \
-		 -DBUILD_opencv_videoio=FALSE \
-		 -DBUILD_opencv_videostab=FALSE \
+		 -DBUILD_opencv_videoio=TRUE \
+		 -DBUILD_opencv_videostab=TRUE \
 		 -DBUILD_opencv_world=FALSE \
 		 -DCUDA_BUILD_CUBIN=FALSE \
 		 -DCUDA_BUILD_EMULATION=FALSE \
