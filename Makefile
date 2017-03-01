@@ -18,7 +18,7 @@ build:
 
 
 cc:
-	mkdir build -p;
+	mkdir -p build;
 	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/bebop.toolchain.cmake \
 		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
 		 -DBUILD_CUDA_STUBS=FALSE \
