@@ -3,13 +3,13 @@ PWD	= $(shell pwd)
 
 
 all:
-	git submodule update --init
-	cd opencv && git reset --hard && git apply < ../fix_compiler_crash.patch && cd ..
+	git submodule init
+	git submodule update
+	cd opencv && git am --signoff < ../fix_compiler_crash.patch && cd ..
 	make cc
 	make build
 	./link.py > install/opencv.xml
-	cd opencv && git reset --hard
-
+	git submodule update
 
 build:
 	make -C ./build
