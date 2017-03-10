@@ -5,7 +5,7 @@ PWD	= $(shell pwd)
 all:
 	git submodule init
 	git submodule update
-	cd opencv && git am --signoff < ../fix_compiler_crash.patch && cd ..
+	cd opencv && git am --signoff < ../fix_compiler_crash.patch && git am --signoff < ../fix_compiler_crash2.patch && cd ..
 	make cc
 	make build
 	./link.py > install/opencv.xml
