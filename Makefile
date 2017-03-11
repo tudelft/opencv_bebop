@@ -10,14 +10,14 @@ all:
 	./link.py > install/opencv.xml
 	cd opencv && git reset --hard
 
+
 build:
 	make -C ./build
 	make -C ./build install
 
 
-
 cc:
-	mkdir build -p;
+	mkdir -p build;
 	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/bebop.toolchain.cmake \
 		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
 		 -DBUILD_CUDA_STUBS=FALSE \
@@ -74,6 +74,7 @@ cc:
 		 -DENABLE_AVX2=FALSE \
 		 -DENABLE_COVERAGE=FALSE \
 		 -DENABLE_FAST_MATH=FALSE \
+		 -DENABLE_FMA3=FALSE \
 		 -DENABLE_IMPL_COLLECTION=FALSE \
 		 -DENABLE_NOISY_WARNINGS=FALSE \
 		 -DENABLE_OMIT_FRAME_POINTER=FALSE \
@@ -147,6 +148,7 @@ patch:
 
 clean:
 	rm -rf ./build
+	rm -rf ./install
 	rm -rf *~
 
 .PHONY: build cc clean
