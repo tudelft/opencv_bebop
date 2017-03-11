@@ -1,106 +1,52 @@
-From ea4d1ca8ea61ce8c656afdb3ea216f0fa40bc7be Mon Sep 17 00:00:00 2001
-From: Christophe De Wagter <dewagter@gmail.com>
-Date: Thu, 10 Mar 2016 08:31:22 +0100
-Subject: [PATCH 1/2] fix internal compiler error ubuntu 14.04
-
-Signed-off-by: Christophe De Wagter <dewagter@gmail.com>
----
- modules/imgproc/src/connectedcomponents.cpp | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
-
-diff --git a/modules/imgproc/src/connectedcomponents.cpp b/modules/imgproc/src/connectedcomponents.cpp
-index 523eb14..1920dd2 100644
---- a/modules/imgproc/src/connectedcomponents.cpp
-+++ b/modules/imgproc/src/connectedcomponents.cpp
-@@ -335,8 +335,9 @@ namespace cv{
- }//end namespace connectedcomponents
- 
- //L's type must have an appropriate depth for the number of pixels in I
-+/*
- template<typename StatsOp>
--static
-+staticz
- int connectedComponents_sub1(const cv::Mat &I, cv::Mat &L, int connectivity, StatsOp &sop){
-     CV_Assert(L.channels() == 1 && I.channels() == 1);
-     CV_Assert(connectivity == 8 || connectivity == 4);
-@@ -361,6 +362,7 @@ int connectedComponents_sub1(const cv::Mat &I, cv::Mat &L, int connectivity, Sta
-     CV_Error(CV_StsUnsupportedFormat, "unsupported label/image type");
-     return -1;
- }
-+*/
- 
- }
- 
-@@ -369,14 +371,8 @@ int cv::connectedComponents(InputArray _img, OutputArray _labels, int connectivi
-     _labels.create(img.size(), CV_MAT_DEPTH(ltype));
-     cv::Mat labels = _labels.getMat();
-     connectedcomponents::NoOp sop;
--    if(ltype == CV_16U){
--        return connectedComponents_sub1(img, labels, connectivity, sop);
--    }else if(ltype == CV_32S){
--        return connectedComponents_sub1(img, labels, connectivity, sop);
--    }else{
-         CV_Error(CV_StsUnsupportedFormat, "the type of labels must be 16u or 32s");
-         return 0;
--    }
- }
- 
- int cv::connectedComponentsWithStats(InputArray _img, OutputArray _labels, OutputArray statsv,
-@@ -386,12 +382,6 @@ int cv::connectedComponentsWithStats(InputArray _img, OutputArray _labels, Outpu
-     _labels.create(img.size(), CV_MAT_DEPTH(ltype));
-     cv::Mat labels = _labels.getMat();
-     connectedcomponents::CCStatsOp sop(statsv, centroids);
--    if(ltype == CV_16U){
--        return connectedComponents_sub1(img, labels, connectivity, sop);
--    }else if(ltype == CV_32S){
--        return connectedComponents_sub1(img, labels, connectivity, sop);
--    }else{
-         CV_Error(CV_StsUnsupportedFormat, "the type of labels must be 16u or 32s");
-         return 0;
--    }
- }
--- 
-1.9.1
-
-
-From fc4a1543674ff9c7e7e05b5bdaea46821e711182 Mon Sep 17 00:00:00 2001
-From: Christophe De Wagter <dewagter@gmail.com>
-Date: Thu, 10 Mar 2016 12:58:07 +0100
-Subject: [PATCH 2/2] No OPENCL means NO OPENCL
+From a65efbfd539e044d735f446c7fab9171c2180804 Mon Sep 17 00:00:00 2001
+From: wv-tud <w.vlenterie@student.tudelft.nl>
+Date: Sat, 11 Mar 2017 12:39:54 +0100
+Subject: [PATCH] Fixed compiler crashes/warnings for parrot toolchain 2012.03
 
 ---
- modules/core/src/ocl.cpp | 18 +-----------------
- 1 file changed, 1 insertion(+), 17 deletions(-)
+ modules/imgproc/src/morph.cpp                              | 4 +++-
+ modules/photo/src/fast_nlmeans_multi_denoising_invoker.hpp | 4 ++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/modules/core/src/ocl.cpp b/modules/core/src/ocl.cpp
-index eed4ee5..d663fb5 100644
---- a/modules/core/src/ocl.cpp
-+++ b/modules/core/src/ocl.cpp
-@@ -758,23 +758,7 @@ static void* initOpenCLAndLoad(const char* funcname)
+diff --git a/modules/imgproc/src/morph.cpp b/modules/imgproc/src/morph.cpp
+index 52c3411..74b15eb 100644
+--- a/modules/imgproc/src/morph.cpp
++++ b/modules/imgproc/src/morph.cpp
+@@ -637,8 +637,9 @@ template<class Op, class VecOp> struct MorphRowFilter : public BaseRowFilter
+         anchor = _anchor;
+     }
  
- static void* initOpenCLAndLoad(const char* funcname)
- {
--    static bool initialized = false;
--    static void* handle = 0;
--    if (!handle)
--    {
--        if(!initialized)
--        {
--            handle = dlopen("libOpenCL.so", RTLD_LAZY);
--            if(!handle)
--                handle = dlopen("libCL.so", RTLD_LAZY);
--            initialized = true;
--            g_haveOpenCL = handle != 0 && dlsym(handle, oclFuncToCheck) != 0;
--        }
--        if(!handle)
--            return 0;
--    }
--
--    return funcname ? (void*)dlsym(handle, funcname) : 0;
-+  return 0;
- }
+-    void operator()(const uchar* src, uchar* dst, int width, int cn)
++    void operator()(__attribute__((unused)) const uchar* src, __attribute__((unused)) uchar* dst, __attribute__((unused)) int width, __attribute__((unused)) int cn)
+     {
++    /*
+         int i, j, k, _ksize = ksize*cn;
+         const T* S = (const T*)src;
+         Op op;
+@@ -675,6 +676,7 @@ template<class Op, class VecOp> struct MorphRowFilter : public BaseRowFilter
+                 D[i] = m;
+             }
+         }
++    */
+     }
  
- #else
+     VecOp vecOp;
+diff --git a/modules/photo/src/fast_nlmeans_multi_denoising_invoker.hpp b/modules/photo/src/fast_nlmeans_multi_denoising_invoker.hpp
+index 3f13f40..b90bda1 100644
+--- a/modules/photo/src/fast_nlmeans_multi_denoising_invoker.hpp
++++ b/modules/photo/src/fast_nlmeans_multi_denoising_invoker.hpp
+@@ -244,9 +244,9 @@ void FastNlMeansMultiDenoisingInvoker<T, IT, UIT, D, WT>::operator() (const Rang
+ 
+             // calc weights
+             IT estimation[pixelInfo<T>::channels], weights_sum[pixelInfo<WT>::channels];
+-            for (size_t channel_num = 0; channel_num < pixelInfo<T>::channels; channel_num++)
++            for (size_t channel_num = 0; channel_num < (size_t) pixelInfo<T>::channels; channel_num++)
+                 estimation[channel_num] = 0;
+-            for (size_t channel_num = 0; channel_num < pixelInfo<WT>::channels; channel_num++)
++            for (size_t channel_num = 0; channel_num < (size_t) pixelInfo<WT>::channels; channel_num++)
+                 weights_sum[channel_num] = 0;
+ 
+             for (int d = 0; d < temporal_window_size_; d++)
 -- 
-1.9.1
+2.7.4
 

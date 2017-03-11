@@ -74,7 +74,6 @@ cc:
 		 -DENABLE_AVX2=FALSE \
 		 -DENABLE_COVERAGE=FALSE \
 		 -DENABLE_FAST_MATH=FALSE \
-		 -DENABLE_FMA3=FALSE \
 		 -DENABLE_IMPL_COLLECTION=FALSE \
 		 -DENABLE_NOISY_WARNINGS=FALSE \
 		 -DENABLE_OMIT_FRAME_POINTER=FALSE \
@@ -142,8 +141,7 @@ cc:
 
 
 patch:
-	cd opencv
-	git format-patch 3.1.0 --stdout > ../fix_compiler_crash.patch
+	cd opencv && git format-patch 3.2.0 --stdout > ../fix_compiler_crash.patch && cd ..
 
 
 clean:
