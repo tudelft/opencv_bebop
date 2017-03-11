@@ -5,7 +5,7 @@ PWD	= $(shell pwd)
 all:
 	git submodule init
 	git submodule update
-	cd opencv && git am --signoff < ../fix_compiler_crash.patch && git am --signoff < ../fix_compiler_crash2.patch && cd ..
+	
 	make cc
 	make build
 	./link.py > install/opencv.xml
@@ -44,8 +44,8 @@ cc:
 		 -DBUILD_opencv_features2d=FALSE \
 		 -DBUILD_opencv_flann=FALSE \
 		 -DBUILD_opencv_highgui=FALSE \
-		 -DBUILD_opencv_imgcodecs=TRUE \
-		 -DBUiLD_opencv_imgproc=TRUE \
+		 -DBUILD_opencv_imgcodecs=FALSE \
+		 -DBUiLD_opencv_imgproc=FALSE \
 		 -DBUILD_opencv_java=FALSE \
 		 -DBUILD_opencv_ml=FALSE \
 		 -DBUILD_opencv_objdetect=FALSE \
