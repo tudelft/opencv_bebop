@@ -7,12 +7,12 @@ set(GCC_COMPILER_VERSION "4.7" CACHE STRING "GCC Compiler version")
 
 set(FLOAT_ABI_SUFFIX "")
 
-set(CMAKE_C_COMPILER           "/usr/bin/arm-linux-gnueabi-gcc"                    CACHE STRING "cc compiler")
-set(CMAKE_AR           "/usr/bin/arm-linux-gnueabi-ar"                    CACHE STRING "cc ar")
-set(CMAKE_CXX_COMPILER 	"/usr/bin/arm-linux-gnueabi-g++"                    CACHE STRING "c++ compiler")
+set(CMAKE_C_COMPILER   "/opt/arm-2012.03/bin/arm-none-linux-gnueabi-gcc"                   CACHE STRING "cc compiler")
+set(CMAKE_AR           "/opt/arm-2012.03/bin/arm-none-linux-gnueabi-ar"                    CACHE STRING "cc ar")
+set(CMAKE_CXX_COMPILER "/opt/arm-2012.03/bin/arm-none-linux-gnueabi-g++"                   CACHE STRING "c++ compiler")
 set(ARM_LINUX_SYSROOT /usr/arm-linux-gnueabi${FLOAT_ABI_SUFFIX} CACHE PATH "ARM cross compilation system root")
 
-set(CMAKE_CXX_FLAGS           ""                    CACHE STRING "c++ flags")
+set(CMAKE_CXX_FLAGS           "-D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS"                    CACHE STRING "c++ flags")
 set(CMAKE_C_FLAGS             ""                    CACHE STRING "c flags")
 set(CMAKE_SHARED_LINKER_FLAGS ""                    CACHE STRING "shared linker flags")
 set(CMAKE_MODULE_LINKER_FLAGS ""                    CACHE STRING "module linker flags")
