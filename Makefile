@@ -1,6 +1,18 @@
 
 PWD	= $(shell pwd)
 
+ifeq ($(OS),Windows_NT)
+  $(warning Warning: OpenCV compilation on Windows not supported)
+else
+  UNAME_S := $(shell uname -s)
+  ifeq ($(UNAME_S),Linux)
+    CMAKE_FILE     ?= bebop.toolchain.cmake.linux
+  else
+    ifeq ($(UNAME_S),Darwin)
+      CMAKE_FILE     ?= bebop.toolchain.cmake.osx
+    endif
+  endif
+endif
 
 all:
 	git submodule init
@@ -19,7 +31,7 @@ build:
 
 cc:
 	mkdir -p build;
-	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/bebop.toolchain.cmake \
+	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/$(CMAKE_FILE) \
 		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
 		 -DBUILD_CUDA_STUBS=FALSE \
 		 -DBUILD_DOCS=FALSE  \
