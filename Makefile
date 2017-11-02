@@ -1,6 +1,18 @@
 
 PWD	= $(shell pwd)
 
+ifeq ($(OS),Windows_NT)
+  $(warning Warning: OpenCV compilation on Windows not supported)
+else
+  UNAME_S := $(shell uname -s)
+  ifeq ($(UNAME_S),Linux)
+    CMAKE_FILE     ?= bebop.toolchain.cmake
+  else
+    ifeq ($(UNAME_S),Darwin)
+      CMAKE_FILE     ?= bebop.toolchain.cmake.osx
+    endif
+  endif
+endif
 
 all:
 	git submodule update --init
@@ -16,10 +28,9 @@ build:
 	make -C ./build install
 
 
-
 cc:
 	mkdir -p build;
-	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/bebop.toolchain.cmake \
+	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/$(CMAKE_FILE) \
 		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
 		 -DBUILD_CUDA_STUBS=FALSE \
 		 -DBUILD_DOCS=FALSE  \
@@ -38,36 +49,43 @@ cc:
 		 -DBUILD_WITH_DEBUG_INFO=FALSE \
 		 -DBUILD_WITH_DYNAMIC_IPP=FALSE \
 		 -DBUILD_ZLIB=FALSE \
-		 -DBUILD_opencv_apps=FALSE \
-		 -DBUILD_opencv_calib3d=FALSE \
+		 -DBUILD_opencv_apps=TRUE \
+		 -DBUILD_opencv_calib3d=TRUE \
 		 -DBUILD_opencv_core=TRUE \
-		 -DBUILD_opencv_features2d=FALSE \
-		 -DBUILD_opencv_flann=FALSE \
+		 -DBUILD_opencv_features2d=TRUE \
+		 -DBUILD_opencv_flann=TRUE \
 		 -DBUILD_opencv_highgui=FALSE \
 		 -DBUILD_opencv_imgcodecs=TRUE \
-		 -DBUiLD_opencv_imgproc=TRUE \
+		 -DBUILD_opencv_imgproc=TRUE \
+		 -DBUILD_opencv_ximgproc=TRUE \
+		 -DBUILD_opencv_dnn=TRUE \
+		 -DBUILD_opencv_optflow=TRUE \
+		 -DBUILD_opencv_bgsegm=TRUE \
+		 -DBUILD_opencv_bioinspired=TRUE \
+		 -DBUILD_opencv_tracking=TRUE \
 		 -DBUILD_opencv_java=FALSE \
-		 -DBUILD_opencv_ml=FALSE \
+		 -DBUILD_opencv_ml=TRUE \
 		 -DBUILD_opencv_objdetect=TRUE \
-		 -DBUILD_opencv_photo=FALSE \
-		 -DBUILD_opencv_shape=FALSE \
-		 -DBUILD_opencv_stitching=FALSE \
-		 -DBUILD_opencv_superres=FALSE \
+		 -DBUILD_opencv_xobjdetect=TRUE \
+		 -DBUILD_opencv_photo=TRUE \
+		 -DBUILD_opencv_shape=TRUE \
+		 -DBUILD_opencv_stitching=TRUE \
+		 -DBUILD_opencv_superres=TRUE \
 		 -DBUILD_opencv_ts=FALSE \
 		 -DBUILD_opencv_video=TRUE \
 		 -DBUILD_opencv_videoio=TRUE \
 		 -DBUILD_opencv_videostab=TRUE \
-		 -DBUILD_opencv_world=FALSE \
+		 -DBUILD_opencv_world=TRUE \
 		 -DCUDA_BUILD_CUBIN=FALSE \
 		 -DCUDA_BUILD_EMULATION=FALSE \
 		 -DCUDA_SEPARABLE_COMPILATION=FALSE \
 		 -DCUDA_VERBOSE_BUILD=FALSE \
 		 -DDOWNLOAD_EXTERNAL_TEST_DATA=FALSE \
+		 -DENABLE_NEON=TRUE \
 		 -DENABLE_AVX=FALSE \
 		 -DENABLE_AVX2=FALSE \
 		 -DENABLE_COVERAGE=FALSE \
 		 -DENABLE_FAST_MATH=FALSE \
-		 -DENABLE_FMA3=FALSE \
 		 -DENABLE_IMPL_COLLECTION=FALSE \
 		 -DENABLE_NOISY_WARNINGS=FALSE \
 		 -DENABLE_OMIT_FRAME_POINTER=FALSE \
@@ -82,7 +100,7 @@ cc:
 		 -DENABLE_SSE42=FALSE \
 		 -DENABLE_SSSE3=FALSE \
 		 -DINSTALL_CREATE_DISTRIB=FALSE \
-		 -DINSTALL_C_EXAMPLES=FALSE \
+		 -DINSTALL_C_EXAMPLES=TRUE \
 		 -DINSTALL_PYTHON_EXAMPLES=FALSE \
 		 -DINSTALL_TESTS=FALSE \
 		 -DOPENCV_WARNINGS_ARE_ERRORS=FALSE \
@@ -96,15 +114,16 @@ cc:
 		 -DWITH_GDAL=FALSE \
 		 -DWITH_GIGEAPI=FALSE \
 		 -DWITH_GPHOTO2=FALSE \
-		 -DWITH_GSTREAMER=FALSE \
+		 -DWITH_GSTREAMER=TRUE \
 		 -DWITH_GSTREAMER_0_10=FALSE \
 		 -DWITH_GTK=FALSE \
 		 -DWITH_GTK_2_X=FALSE \
 		 -DWITH_IPP=FALSE \
 		 -DWITH_IPP_A=FALSE \
 		 -DWITH_JASPER=FALSE \
-		 -DWITH_JPEG=FALSE \
-		 -DWITH_LIBV4L=FALSE \
+		 -DWITH_ZLIB=TRUE \
+		 -DWITH_JPEG=TRUE \
+		 -DWITH_LIBV4L=TRUE \
 		 -DWITH_MATLAB=FALSE \
 		 -DWITH_NVCUVID=FALSE \
 		 -DWITH_OPENCL=FALSE \
@@ -112,16 +131,16 @@ cc:
 		 -DWITH_OPENCLAMDFFT=FALSE \
 		 -DWITH_OPENCL_SVM=FALSE \
 		 -DWITH_OPENEXR=FALSE \
-		 -DWITH_OPENGL=FALSE \
+		 -DWITH_OPENGL=TRUE \
 		 -DWITH_OPENMP=FALSE \
 		 -DWITH_OPENNI=FALSE \
 		 -DWITH_OPENNI2=FALSE \
 		 -DWITH_PNG=TRUE \
-		 -DWITH_PTHREADS_PF=FALSE \
+		 -DWITH_PTHREADS_PF=TRUE \
 		 -DWITH_PVAPI=FALSE \
 		 -DWITH_QT=FALSE \
 		 -DWITH_TBB=FALSE \
-		 -DWITH_TIFF=FALSE \
+		 -DWITH_TIFF=TRUE \
 		 -DWITH_UNICAP=FALSE \
 		 -DWITH_V4L=TRUE \
 		 -DWITH_VA=FALSE \
@@ -134,8 +153,7 @@ cc:
 
 
 patch:
-	cd opencv
-	git format-patch 3.1.0 --stdout > ../fix_compiler_crash.patch
+	cd opencv && git format-patch 3.2.0 --stdout > ../fix_compiler_crash.patch && cd ..
 
 
 clean:
