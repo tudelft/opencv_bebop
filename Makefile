@@ -6,7 +6,7 @@ ifeq ($(OS),Windows_NT)
 else
   UNAME_S := $(shell uname -s)
   ifeq ($(UNAME_S),Linux)
-    CMAKE_FILE     ?= bebop.toolchain.cmake.linux
+    CMAKE_FILE     ?= bebop.toolchain.cmake.none-linux
   else
     ifeq ($(UNAME_S),Darwin)
       CMAKE_FILE     ?= bebop.toolchain.cmake.osx
