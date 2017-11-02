@@ -1,6 +1,11 @@
 
 PWD	= $(shell pwd)
 
+# Building needs two settings: the crosscompiler and the target directory
+# both can be set from command line: make BUILD_DIR=./build_parrot CMAKE_FILE=bebop.toolchain.cmake.none-linux
+
+BUILD_DIR ?= ./build
+
 ifeq ($(OS),Windows_NT)
   $(warning Warning: OpenCV compilation on Windows not supported)
 else
@@ -14,6 +19,7 @@ else
   endif
 endif
 
+
 all:
 	git submodule init
 	git submodule update
@@ -23,14 +29,18 @@ all:
 	./link.py > install/opencv.xml
 
 build:
-	make -C ./build
-	make -C ./build install
+	make -C $(BUILD_DIR)
+	make -C $(BUILD_DIR) install
 
+cs:
+	make BUILD_DIR=./build_parrot CMAKE_FILE=bebop.toolchain.cmake.none-linux
 
+osx:
+	make BUILD_DIR=./build_osx CMAKE_FILE=bebop.toolchain.cmake.osx
 
 cc:
-	mkdir -p build;
-	cmake -H./opencv -B./build -DCMAKE_TOOLCHAIN_FILE=$(PWD)/$(CMAKE_FILE) \
+	mkdir -p $(BUILD_DIR);
+	cmake -H./opencv -B$(BUILD_DIR) -DCMAKE_TOOLCHAIN_FILE=$(PWD)/$(CMAKE_FILE) \
 		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
 		 -DBUILD_CUDA_STUBS=FALSE \
 		 -DBUILD_DOCS=FALSE  \
@@ -158,6 +168,7 @@ patch:
 
 clean:
 	rm -rf ./build
+	rm -rf ./build_parrot
 	rm -rf ./install
 	rm -rf *~
 
