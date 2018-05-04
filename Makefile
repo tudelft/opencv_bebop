@@ -4,32 +4,40 @@ PWD	= $(shell pwd)
 # Building needs two settings: the crosscompiler and the target directory
 # both can be set from command line: make BUILD_DIR=./build_parrot CMAKE_FILE=bebop.toolchain.cmake.none-linux
 
-BUILD_DIR ?= ./build
+# This compiles with a soft floating point unit. If you want support
+# for hard floating point unit remove -DSOFTFP=ON
+# -DENABLE_VFPV3=TRUE for virtual floating point optimisation for arm processors
+# -DENABLE_NEON=TRUE for neon hard floating point optimisation
 
+BUILD_DIR  ?= ./build
+
+# get number of processors for parallel make later
+NPROCS:=1
 ifeq ($(OS),Windows_NT)
   $(warning Warning: OpenCV compilation on Windows not supported)
 else
   UNAME_S := $(shell uname -s)
   ifeq ($(UNAME_S),Linux)
     CMAKE_FILE     ?= bebop.toolchain.cmake.linux
+    NPROCS:=$(shell grep -c ^processor /proc/cpuinfo)
   else
     ifeq ($(UNAME_S),Darwin)
       CMAKE_FILE     ?= bebop.toolchain.cmake.osx
+      NPROCS:=$(shell system_profiler | awk '/Number Of CPUs/{print $4}{next;}')
     endif
   endif
 endif
 
-
 all:
 	git submodule init
 	git submodule update
-	cd opencv && git am --signoff < ../fix_compiler_crash.patch && cd ..
+	cd opencv && git reset --hard && patch -p1 < ../fix_compiler_crash.patch && cd ..
 	make cc
 	make build
 	./link.py > install/opencv.xml
 
 build:
-	make -C $(BUILD_DIR)
+	make -j$(NPROCS) -C $(BUILD_DIR)
 	make -C $(BUILD_DIR) install
 
 cs:
@@ -40,7 +48,7 @@ osx:
 
 cc:
 	mkdir -p $(BUILD_DIR);
-	cmake -H./opencv -B$(BUILD_DIR) -DCMAKE_TOOLCHAIN_FILE=$(PWD)/$(CMAKE_FILE) \
+	cmake -H./opencv -B$(BUILD_DIR) -DSOFTFP=ON -DCMAKE_TOOLCHAIN_FILE=$(PWD)/$(CMAKE_FILE) \
 		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
 		 -DBUILD_CUDA_STUBS=FALSE \
 		 -DBUILD_DOCS=FALSE  \
@@ -91,7 +99,7 @@ cc:
 		 -DCUDA_SEPARABLE_COMPILATION=FALSE \
 		 -DCUDA_VERBOSE_BUILD=FALSE \
 		 -DDOWNLOAD_EXTERNAL_TEST_DATA=FALSE \
-		 -DENABLE_NEON=TRUE \
+		 -DENABLE_VFPV3=TRUE \
 		 -DENABLE_AVX=FALSE \
 		 -DENABLE_AVX2=FALSE \
 		 -DENABLE_COVERAGE=FALSE \
@@ -110,7 +118,7 @@ cc:
 		 -DENABLE_SSE42=FALSE \
 		 -DENABLE_SSSE3=FALSE \
 		 -DINSTALL_CREATE_DISTRIB=FALSE \
-		 -DINSTALL_C_EXAMPLES=TRUE \
+		 -DINSTALL_C_EXAMPLES=FALSE \
 		 -DINSTALL_PYTHON_EXAMPLES=FALSE \
 		 -DINSTALL_TESTS=FALSE \
 		 -DOPENCV_WARNINGS_ARE_ERRORS=FALSE \
@@ -163,7 +171,7 @@ cc:
 
 
 patch:
-	cd opencv && git format-patch 3.2.0 --stdout > ../fix_compiler_crash.patch && cd ..
+	cd opencv && git diff > ../fix_compiler_crash.patch && cd ..
 
 
 clean:
