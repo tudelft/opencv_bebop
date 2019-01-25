@@ -73,7 +73,7 @@ cc:
 		 -DBUILD_opencv_core=TRUE \
 		 -DBUILD_opencv_features2d=FALSE \
 		 -DBUILD_opencv_flann=FALSE \
-		 -DBUILD_opencv_highgui=FASLE \
+		 -DBUILD_opencv_highgui=FALSE \
 		 -DBUILD_opencv_imgcodecs=FALSE \
 		 -DBUILD_opencv_imgproc=FALSE \
 		 -DBUILD_opencv_ximgproc=FALSE \
@@ -205,8 +205,8 @@ debug:
 		 -DBUILD_opencv_stitching=FALSE \
 		 -DBUILD_opencv_superres=FALSE \
 		 -DBUILD_opencv_ts=FALSE \
-		 -DBUILD_opencv_video=FALSE \
-		 -DBUILD_opencv_videoio=FALSE \
+		 -DBUILD_opencv_video=TRUE \
+		 -DBUILD_opencv_videoio=TRUE \
 		 -DBUILD_opencv_videostab=FALSE \
 		 -DBUILD_opencv_world=FALSE \
 		 -DCUDA_BUILD_CUBIN=FALSE \
