@@ -1,8 +1,8 @@
 
 PWD	= $(shell pwd)
 
-# Building needs two settings: the crosscompiler and the target directory
-# both can be set from command line: make BUILD_DIR=./build_parrot CMAKE_FILE=bebop.toolchain.cmake.none-linux
+# Use 'make <all|pc|arm>' to compile OpenCV. The crosscompiler can be overridden
+# by setting CMAKE_FILE=<toolchain file>.
 
 # This compiles with a soft floating point unit. If you want support
 # for hard floating point unit remove -DSOFTFP=ON
@@ -59,7 +59,7 @@ else
   endif
 endif
 
-# Make targets
+# Compilation targets
 all: update_submodules arm pc
 
 arm:
@@ -72,7 +72,7 @@ pc:
 	make build BUILD=pc
 
 
-# Internal targets
+# Misc targets
 build:
 	make cmake BUILD=$(BUILD) EXTRA_BUILD_FLAGS="$(EXTRA_BUILD_FLAGS)"
 	make compile BUILD=$(BUILD)
