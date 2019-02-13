@@ -9,8 +9,9 @@ PWD	= $(shell pwd)
 # -DENABLE_VFPV3=TRUE for virtual floating point optimisation for arm processors
 # -DENABLE_NEON=TRUE for neon hard floating point optimisation
 
-BUILD     ?= cc
-BUILD_DIR ?= ./build_$(BUILD)
+BUILD       ?= pc
+BUILD_DIR   ?= ./build_$(BUILD)
+INSTALL_DIR ?= ./install_$(BUILD)
 
 # Non-default CMake options that apply to all targets
 BUILD_FLAGS ?= -DBUILD_JAVA=OFF \
@@ -39,6 +40,7 @@ BUILD_FLAGS ?= -DBUILD_JAVA=OFF \
 	-DWITH_OPENEXR=OFF \
 	-DWITH_VTK=OFF \
 	-DWITH_WEBP=OFF
+EXTRA_BUILD_FLAGS ?=
 
 # get number of processors for parallel make later
 NPROCS:=1
@@ -57,45 +59,41 @@ else
   endif
 endif
 
-all:
-	#git submodule init
-	#git submodule update
-	#cd opencv && git am --signoff < ../fix_compiler_crash.patch && cd ..
-	make ${BUILD}
-	make build
-	#./link.py > install/opencv.xml
+# Make targets
+all: update_submodules arm pc
 
+arm:
+	make build BUILD=arm EXTRA_BUILD_FLAGS="\
+		-DCMAKE_TOOLCHAIN_FILE=$(PWD)/$(CMAKE_FILE) \
+		-DSOFTFP=ON \
+		"
+
+pc:
+	make build BUILD=pc
+
+
+# Internal targets
 build:
+	make cmake BUILD=$(BUILD) EXTRA_BUILD_FLAGS="$(EXTRA_BUILD_FLAGS)"
+	make compile BUILD=$(BUILD)
+
+cmake:
+	mkdir -p $(BUILD_DIR)
+	cmake -H./opencv -B$(BUILD_DIR) -DCMAKE_INSTALL_PREFIX=$(PWD)/$(INSTALL_DIR) \
+		$(BUILD_FLAGS) $(EXTRA_BUILD_FLAGS)
+
+compile:
 	make -j$(NPROCS) -C $(BUILD_DIR)
 	make -C $(BUILD_DIR) install
-
-cs:
-	make BUILD_DIR=./build_parrot CMAKE_FILE=bebop.toolchain.cmake.none-linux
-
-osx:
-	make BUILD_DIR=./build_osx CMAKE_FILE=bebop.toolchain.cmake.osx
-
-cc:
-	mkdir -p $(BUILD_DIR);
-	cmake -H./opencv -B$(BUILD_DIR) \
-		 -DCMAKE_TOOLCHAIN_FILE=$(PWD)/$(CMAKE_FILE) \
-		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install \
-		 -DSOFTFP=ON \
-		 $(BUILD_FLAGS)
-
-debug:
-	mkdir -p $(BUILD_DIR);
-	cmake -H./opencv -B$(BUILD_DIR) \
-		 -DCMAKE_INSTALL_PREFIX=$(PWD)/install_pc \
-		 $(BUILD_FLAGS)
-
-patch:
-	cd opencv && git diff > ../fix_compiler_crash.patch && cd ..
-
 
 clean:
 	rm -rf ./build*
 	rm -rf ./install*
 	rm -rf *~
 
-.PHONY: build cc clean
+update_submodules:
+	git submodule init
+	git submodule sync
+	git submodule update
+
+.PHONY: all arm pc build cmake compile clean update_submodules
