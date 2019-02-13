@@ -4,8 +4,7 @@ Cross Compile OpenCV for gnu-arm-linux-eabi
 [![Build Status](https://travis-ci.org/tudelft/opencv_bebop.png?branch=master)](https://travis-ci.org/tudelft/opencv_bebop) [![Gitter chat](https://badges.gitter.im/paparazzi/discuss.svg)](https://gitter.im/paparazzi/discuss)
 
 
- - OpenCV 3.2.0
- - For other version, look at the releases
+ - OpenCV 3.4.5
  - On OSX, carlson-minot is automatically selected in the Makefile
  - Tested with:
    - /usr/bin/arm-linux-gnueabi-g++  (ver 4.7.3)

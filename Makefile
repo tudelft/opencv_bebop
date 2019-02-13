@@ -76,6 +76,7 @@ pc:
 build:
 	make cmake BUILD=$(BUILD) EXTRA_BUILD_FLAGS="$(EXTRA_BUILD_FLAGS)"
 	make compile BUILD=$(BUILD)
+	make linkfile BUILD=$(BUILD)
 
 cmake:
 	mkdir -p $(BUILD_DIR)
@@ -85,6 +86,9 @@ cmake:
 compile:
 	make -j$(NPROCS) -C $(BUILD_DIR)
 	make -C $(BUILD_DIR) install
+
+linkfile:
+	./link.py $(INSTALL_DIR) > $(INSTALL_DIR)/opencv.xml
 
 clean:
 	rm -rf ./build*
@@ -96,4 +100,4 @@ update_submodules:
 	git submodule sync
 	git submodule update
 
-.PHONY: all arm pc build cmake compile clean update_submodules
+.PHONY: all arm pc build cmake compile linkfile clean update_submodules
