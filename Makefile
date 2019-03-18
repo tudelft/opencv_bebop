@@ -14,7 +14,9 @@ BUILD_DIR   ?= ./build_$(BUILD)
 INSTALL_DIR ?= ./install_$(BUILD)
 
 # Non-default CMake options that apply to all targets
-BUILD_FLAGS ?= -DBUILD_JAVA=OFF \
+BUILD_FLAGS ?= \
+	-DOPENCV_EXTRA_MODULES_PATH=./opencv_contrib/modules \
+	-DBUILD_JAVA=OFF \
 	-DBUILD_IPP_IW=OFF \
 	-DBUILD_ITT=OFF \
 	-DBUILD_PACKAGE=OFF \
