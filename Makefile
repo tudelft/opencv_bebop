@@ -74,7 +74,7 @@ cc:
 		 -DBUILD_opencv_features2d=FALSE \
 		 -DBUILD_opencv_flann=FALSE \
 		 -DBUILD_opencv_highgui=FALSE \
-		 -DBUILD_opencv_imgcodecs=FALSE \
+		 -DBUILD_opencv_imgcodecs=TRUE \
 		 -DBUILD_opencv_imgproc=FALSE \
 		 -DBUILD_opencv_ximgproc=FALSE \
 		 -DBUILD_opencv_dnn=FALSE \
