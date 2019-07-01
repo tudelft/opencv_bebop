@@ -16,5 +16,4 @@ addons:
       - cmake-data
 script:
   - make
-  - make cs
 
