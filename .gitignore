@@ -1,4 +1,3 @@
-build/
-build_parrot/
-install/
+build*
+install*
 *~
