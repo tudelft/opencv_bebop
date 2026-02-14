@@ -2,7 +2,7 @@
 import sys
 
 install_dir = sys.argv[1].strip('./')
-text_file = open(install_dir + "/lib/pkgconfig/opencv.pc", "r")
+text_file = open(install_dir + "/lib/pkgconfig/opencv4.pc", "r")
 lines = text_file.readlines()
 
 for l in lines:
