@@ -1,24 +1,46 @@
-Cross Compile OpenCV for gnu-arm-linux-eabi
-===========================================
+OpenCV for the Parrot Bebop (Paparazzi)
+=======================================
 
-[![Build Status](https://travis-ci.org/tudelft/opencv_bebop.png?branch=master)](https://travis-ci.org/tudelft/opencv_bebop) [![Gitter chat](https://badges.gitter.im/paparazzi/discuss.svg)](https://gitter.im/paparazzi/discuss)
+Builds OpenCV 4.10.0 (with `opencv_contrib`) as static libraries for Paparazzi:
 
+ - `arm`: cross-compiled for the Parrot Bebop 1/2, soft-float ABI (`-DSOFTFP=ON`)
+ - `pc`: for the NPS simulator on your computer
 
- - OpenCV 3.4.5
- - On OSX, carlson-minot is automatically selected in the Makefile
- - Tested with:
-   - /usr/bin/arm-linux-gnueabi-g++  (ver 4.7.3)
-   - /opt/arm-2012.03/bin/arm-none-linux-gnueabi-g++  (ver 4.6.3)
-   - /usr/local/carlson-minot/crosscompilers/bin/arm-none-linux-gnueabi-g++ (ver ??)
- - To use other crosscompilers, make a new bebop.toolchain.cmake.XXX and change the Makefile to call it
- - An XML document with the paparazzi link parameters is created in install/opencv.xml: **copy paste these parameters in your opencv module**
+In Paparazzi this repository is the submodule `sw/ext/opencv_bebop`.
 
-For more info: read the Makefile
+Build
+-----
 
+From the Paparazzi root:
 
-To build it 100% automatic with defualt settings just use this command:
--------------------
+    make opencv_bebop
 
-  make
+or in this directory:
 
+    make        # update the submodules, build arm and pc
+    make arm    # Bebop only
+    make pc     # simulator only
+    make clean
 
+The results are in `install_arm/` and `install_pc/`. Each also gets an `opencv.xml` with the
+`LDFLAGS` for a Paparazzi module, made by `link.py` from `lib/pkgconfig/opencv4.pc`. See
+`conf/modules/cv_opencvdemo.xml` in Paparazzi for an example module.
+
+Cross-compiler
+--------------
+
+The toolchain file is chosen with `CMAKE_FILE`:
+
+| `CMAKE_FILE` | Compiler |
+|---|---|
+| `bebop.toolchain.cmake.linux` (default on Linux) | `arm-linux-gnueabi-gcc` from the `PATH` (Ubuntu package `gcc-arm-linux-gnueabi`) |
+| `bebop.toolchain.cmake.none-linux` | Parrot toolchain 2012.03 in `/opt/arm-2012.03` |
+| `bebop.toolchain.cmake.osx` (default on macOS) | carlson-minot toolchain in `/usr/local/carlson-minot` |
+
+Example: `make arm CMAKE_FILE=bebop.toolchain.cmake.none-linux`
+
+The Paparazzi autopilot that links OpenCV must be built with the same compiler and ABI.
+The original Parrot toolchains are listed in
+[parrot-opensource/toolchains](https://github.com/parrot-opensource/toolchains).
+On Ubuntu 24.04 the `arm-linux-gnueabi-gcc` (GCC 13) autopilot freezes on the Bebop, see
+[paparazzi/paparazzi#3596](https://github.com/paparazzi/paparazzi/issues/3596).
