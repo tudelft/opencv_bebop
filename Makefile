@@ -46,6 +46,10 @@ BUILD_FLAGS ?= \
 	-DOPENCV_GENERATE_PKGCONFIG=ON
 EXTRA_BUILD_FLAGS ?=
 
+# CMake 4 (Ubuntu 26.04) dropped compatibility with cmake_minimum_required < 3.5,
+# which OpenCV 4.10 still uses (also in its script-mode pkg-config step).
+export CMAKE_POLICY_VERSION_MINIMUM ?= 3.5
+
 # get number of processors for parallel make later
 NPROCS:=1
 ifeq ($(OS),Windows_NT)

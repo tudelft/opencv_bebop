@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Ubuntu ${{ matrix.ubuntu }} arm
+    runs-on: ubuntu-latest
+    container: ubuntu:${{ matrix.ubuntu }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu: ['22.04', '24.04', '26.04']
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - name: Install packages
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates git make cmake \
+            python3 g++-arm-linux-gnueabi qemu-user
+          arm-linux-gnueabi-g++ --version | head -1
+          cmake --version | head -1
+
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+          fetch-depth: 1
+
+      - name: Build OpenCV (arm)
+        run: make arm
+
+      - name: Smoke test
+        run: ci/smoke_test.sh arm
